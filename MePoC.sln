@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MePoC", "MePoC\MePoC.csproj", "{B4DFC076-EEDD-4A55-A91B-83512840F372}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FDE75CCA-5FF4-4DBF-B6D4-814C11A828D6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoChat", "DemoChat\DemoChat.csproj", "{4DD34BCD-D20C-42B2-A196-AFAB1C75930F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4DFC076-EEDD-4A55-A91B-83512840F372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4DFC076-EEDD-4A55-A91B-83512840F372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4DFC076-EEDD-4A55-A91B-83512840F372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4DFC076-EEDD-4A55-A91B-83512840F372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DD34BCD-D20C-42B2-A196-AFAB1C75930F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DD34BCD-D20C-42B2-A196-AFAB1C75930F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DD34BCD-D20C-42B2-A196-AFAB1C75930F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DD34BCD-D20C-42B2-A196-AFAB1C75930F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CDD73E37-4EDF-45BC-9BBF-A07FEE1467CE}
+	EndGlobalSection
+EndGlobal

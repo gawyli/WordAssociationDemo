@@ -1,0 +1,18 @@
+{{!-- Welcoming message --}}
+Hi! I'm gonna help you map your unconscious mind.
+
+{{!-- Step 1: Start the session --}}
+{{set "startSession" (StartWordAssociationTest)}}
+
+{{!-- Step 2: Provide a stimulus word --}}
+{{set "stimulusWord" (AddStimulusWord word="stimulus")}}
+
+
+{{!-- Step 3: Provide a response word --}}
+{{set "responseWord" (AddResponseWord word="response")}}
+
+{{!-- Step 4: Stop the session --}}
+{{set "stopSession" (StopSession)}}
+
+{{!-- After finishing the test, continue to chat with the user --}}
+Thank you for participating in the Word Association Test. Let's continue our chat. How are you feeling about the test?
