@@ -1,70 +1,68 @@
-﻿using System;
+﻿using DemoChat.Audio.Interfaces;
+using DemoChat.Chat.Interfaces;
+using DemoChat.Chat.Models;
+using Microsoft.SemanticKernel.ChatCompletion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-using DemoChat.Audio.Interfaces;
-using DemoChat.Chat.Interfaces;
-using DemoChat.Chat.Models;
-using Microsoft.SemanticKernel.ChatCompletion;
+using DemoChat.Games.Interfaces;
+using Microsoft.SemanticKernel;
 
 namespace DemoChat.Games;
-public class WordAssociation
+public class Playground : IPlayground
 {
-    private readonly ILogger<WordAssociation> _logger;
+    private readonly ILogger<Playground> _logger;
+    private readonly Kernel _kernel;
     private readonly IChatService _chatService;
     private readonly IAudioService _audioService;
 
-    private ChatSession _chatSession = null!;
-    private ChatHistory _chatHistory = null!;
+    protected ChatSession _chatSession = null!;
+    protected ChatHistory _chatHistory = null!;
 
-    private bool _isStopRequest = false;
+    protected bool _isStopRequest = false;
 
-    public WordAssociation(ILogger<WordAssociation> logger, IChatService chatService, IAudioService audioService)
+    public Playground(ILogger<Playground> logger, Kernel kernel, IChatService chatService, IAudioService audioService)
     {
         _logger = logger;
+        _kernel = kernel;
         _chatService = chatService;
         _audioService = audioService;
     }
 
-    public async Task StartGame(CancellationToken stoppingToken)
+    public virtual async Task StartChat(CancellationToken stoppingToken)
     {
+        _logger.LogInformation($"Starting chat in {nameof(Playground)}");
+
         await InitializeChatSession(stoppingToken);
         while (!_isStopRequest)
         {
             Console.WriteLine("\n------------------------");
             await GetUserMessage(stoppingToken);
 
-            if(!_isStopRequest)
+            if (!_isStopRequest)
                 await GetAssistantMessage(stoppingToken);
         }
 
         if (_isStopRequest)
         {
-            await EndChatSession(stoppingToken);
+            await PersistChatSession(stoppingToken);
         }
     }
 
-    private async Task InitializeChatSession(CancellationToken cancellationToken)
+    protected virtual async Task InitializeChatSession(CancellationToken cancellationToken)
     {
-        var systemPrompt = "You are playing a Word Association Game. Always responds with ONLY one word. If Player say stop, you say goodbye.";
+        var systemPrompt = "You are helpful and love small talks. Be a great companion for Human being ";
 
         _chatSession = await _chatService.CreateChatSession(cancellationToken);
         _chatHistory = new ChatHistory(systemPrompt);
 
+        _chatHistory.AddMessage(AuthorRole.Tool, $"ChatSessionId: {_chatSession.Id}");
     }
 
-    private async Task EndChatSession(CancellationToken cancellationToken)
-    {
-        var chatHistoryJson = JsonSerializer.Serialize(_chatHistory);
-        _chatSession.AddChatHistory(chatHistoryJson);
-
-        await _chatService.SaveChatSession(_chatSession, cancellationToken);
-    }
-
-    private async Task GetUserMessage(CancellationToken cancellationToken)
+    protected async Task GetUserMessage(CancellationToken cancellationToken)
     {
         var record = await _audioService.RecordAudioTest(_chatSession.Id, cancellationToken);
         var userMessage = await _audioService.TranscribeAudio(record, cancellationToken);
@@ -79,9 +77,9 @@ public class WordAssociation
         Console.WriteLine($"{AuthorRole.User}: \n> {userMessage}\n");
     }
 
-    private async Task GetAssistantMessage(CancellationToken cancellationToken)
+    protected async Task GetAssistantMessage(CancellationToken cancellationToken)
     {
-        var assistantMessage = await _chatService.SendMessageAsync(_chatHistory, cancellationToken);
+        var assistantMessage = await _chatService.SendMessageAsync(_chatHistory, _kernel, cancellationToken);
 
         if (!String.IsNullOrEmpty(assistantMessage))
         {
@@ -96,4 +94,13 @@ public class WordAssociation
             Console.WriteLine($"{AuthorRole.Assistant}: \n> {assistantMessage}\n");
         }
     }
+
+    protected async Task PersistChatSession(CancellationToken cancellationToken)
+    {
+        var chatHistoryJson = JsonSerializer.Serialize(_chatHistory);
+        _chatSession.AddChatHistory(chatHistoryJson);
+
+        await _chatService.SaveChatSession(_chatSession, cancellationToken);
+    }
+
 }

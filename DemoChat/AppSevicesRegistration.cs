@@ -42,8 +42,9 @@ public static class AppSevicesRegistration
 
     private static IServiceCollection RegisterChatService(this IServiceCollection services, IConfiguration configuration)
     {
-        // Chat Kernel
-        services.RegisterChatKernel(configuration);
+        // Chat Kernels
+        services.RegisterPlaygroundKernel(configuration);
+        services.RegisterWordAssociationKernel(configuration);
 
         services.AddScoped<IChatService, ChatService>();
 

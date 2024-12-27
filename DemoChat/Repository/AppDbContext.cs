@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DemoChat.Audio.Models;
 using DemoChat.Chat.Models;
+using DemoChat.Games.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SemanticKernel.ChatCompletion;
 
@@ -13,6 +14,9 @@ public class AppDbContext : DbContext
 {
     public DbSet<ChatSession> ChatSessions { get; set; }
     public DbSet<AudioFile> AudioFiles { get; set; }
+
+    public DbSet<WordAssociation> WordAssociations { get; set; }
+    public DbSet<Pair> Pairs { get; set; }
 
     public AppDbContext(DbContextOptions options) : base(options)
     {
@@ -27,5 +31,11 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<AudioFile>().HasKey(x => x.Id);
         modelBuilder.Entity<AudioFile>().Property(x => x.AuthorRole)
             .HasConversion(v => v.ToString(), v => (AuthorRole)Enum.Parse(typeof(AuthorRole), v));
+
+        modelBuilder.Entity<WordAssociation>().HasKey(x => x.Id);
+        modelBuilder.Entity<WordAssociation>().HasMany(x => x.Pairs).WithOne().HasForeignKey(x => x.WordAssociationId);
+
+
+
     }
 }
