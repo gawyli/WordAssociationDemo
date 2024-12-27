@@ -5,20 +5,18 @@ This project uses .NET 8
 - Clone git repo to your local station
 
 ## Open the solution
-- If cloned, navigate to the folder with ```.csproj``` file in the root of the application
-  ```.../MePoC/MePoc.csproj```
+- If cloned, navigate to the folder with ```.sln``` solution ```WordsEmotions.sln```
 
   ## Set up the environment
   - Navigate to ```appsettings.json``` and set up OpenAI section as follows
-    - "ModelId": "gpt-3.5-turbo-0125", 
-    - "ChatModelId": "xxx", <- text chat model (optional)
+    - "ChatModelId": "gpt-4o-mini", <- chat completion
     - "EmbeddingModelId": "text-embedding-3-small",
     - "AudioToTextModelId": "whisper-1",
     - "TextToAudioModelId": "tts-1",
     - "ApiKey": "xxx"
 
-  - Set up the sql server database to your needs
-    - "SQLServer": "Server=.;Database={database_name};Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=False;TrustServerCertificate=True"
+  - SQLite is already set up in ```appsettings.json```
+    - "DemoRepository": "Data Source=demo.db"
   ### Set up user secrets
   - Right click on the MePoC project in the Solution Explorer
   - On the list select ```Manage User Secrets``` and add
@@ -29,6 +27,10 @@ This project uses .NET 8
 ## Run Migrations
 - On the top left corner of the Visual Studio navigate to ```View/Other Windows/Package Manager Console```
 - In the terminal type ```Update-Database```
+- This should create a ```demo.db``` file and apply migrations from ```Migrations``` folder
   
 ## Run application
-- Once migrations are set up and our appsettings are configured, run the app and have a play with generating and saving recipes.
+- Once migrations are set up and our appsettings are configured, run the app and have a play word associaton with AI
+
+## Controles
+- When finish talk during the game, press space to continue and send message to Assistatnt and wait until Assistant responses
