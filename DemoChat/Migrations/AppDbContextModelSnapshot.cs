@@ -53,6 +53,8 @@ namespace DemoChat.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChatSessionId");
+
                     b.ToTable("AudioFiles");
                 });
 
@@ -70,6 +72,20 @@ namespace DemoChat.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ChatSessions");
+                });
+
+            modelBuilder.Entity("DemoChat.Audio.Models.AudioFile", b =>
+                {
+                    b.HasOne("DemoChat.Chat.Models.ChatSession", null)
+                        .WithMany("AudioFiles")
+                        .HasForeignKey("ChatSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DemoChat.Chat.Models.ChatSession", b =>
+                {
+                    b.Navigation("AudioFiles");
                 });
 #pragma warning restore 612, 618
         }

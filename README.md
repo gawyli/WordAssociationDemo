@@ -18,19 +18,20 @@ This project uses .NET 8
   - SQLite is already set up in ```appsettings.json```
     - "DemoRepository": "Data Source=demo.db"
   ### Set up user secrets
-  - Right click on the MePoC project in the Solution Explorer
-  - On the list select ```Manage User Secrets``` and add
+  - Right click on the ```DemoChat``` project in the Solution Explorer
+  - On the options list select ```Manage User Secrets``` and add
     - "OpenAI": {
       "ApiKey": "xxx" <- paste your API key
       }
       
 ## Run Migrations
 - On the top left corner of the Visual Studio navigate to ```View/Other Windows/Package Manager Console```
-- In the terminal type ```Update-Database```
+- In the terminal type ```Add-Migration InitialCreate``` (creates Migrations folder) then,
+- Type ```Update-Database```
 - This should create a ```demo.db``` file and apply migrations from ```Migrations``` folder
   
 ## Run application
 - Once migrations are set up and our appsettings are configured, run the app and have a play word associaton with AI
 
 ## Controles
-- When finish talk during the game, press space to continue and send message to Assistatnt and wait until Assistant responses
+- When finish talk during the game, press space to continue, send message to Assistatnt and wait until Assistant responses

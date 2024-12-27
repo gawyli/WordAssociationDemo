@@ -22,6 +22,7 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ChatSession>().HasKey(x => x.Id);
+        modelBuilder.Entity<ChatSession>().HasMany(x => x.AudioFiles).WithOne().HasForeignKey(x => x.ChatSessionId);
 
         modelBuilder.Entity<AudioFile>().HasKey(x => x.Id);
         modelBuilder.Entity<AudioFile>().Property(x => x.AuthorRole)
