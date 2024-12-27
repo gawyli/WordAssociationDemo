@@ -48,8 +48,13 @@ public class AudioService : IAudioService
 
         // Convert audio to text
         var textContent = await audioToTextService.GetTextContentAsync(audioContent, executionSettings);
-        _logger.LogInformation($"Text Transcribed");
+        _logger.LogInformation("Text Transcribed");
 
+        if (!string.IsNullOrEmpty(textContent.Text))
+        {
+            audioFile.SetContent(textContent.Text);
+        }
+        
         await _repository.UpdateAsync(audioFile, cancellationToken);
 
         return textContent.Text!;
