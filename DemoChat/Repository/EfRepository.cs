@@ -16,9 +16,9 @@ public class EfRepository : IRepository
         _dbContext = dbContext;
     }
 
-    public T? GetByIdAsync<T>(string id, CancellationToken cancellationToken) where T : BaseEntity
+    public async Task<T>? GetByIdAsync<T>(string id, CancellationToken cancellationToken) where T : BaseEntity
     {
-        return _dbContext.Set<T>().FirstOrDefault(x => x.Id == id);
+        return await _dbContext.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<List<T>> ListAsync<T>(CancellationToken cancellationToken) where T : BaseEntity

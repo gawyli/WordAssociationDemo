@@ -1,6 +1,7 @@
 using DemoChat.Audio.Interfaces;
 using DemoChat.Chat.Interfaces;
 using DemoChat.Games;
+using DemoChat.Games.Interfaces;
 using Microsoft.SemanticKernel;
 
 namespace DemoChat;
@@ -21,6 +22,7 @@ public class Worker(ILogger<Worker> logger, IServiceProvider serviceProvider) : 
             var chatService = scope.ServiceProvider.GetRequiredService<IChatService>();
             var audioService = scope.ServiceProvider.GetRequiredService<IAudioService>();
             
+            
             _logger.LogInformation("Services Initialized");
 
             switch (choice)
@@ -39,11 +41,11 @@ public class Worker(ILogger<Worker> logger, IServiceProvider serviceProvider) : 
                     break;
                 case "2":
                     Console.WriteLine("Word Association Game selected.");
-
+                    var gameService = scope.ServiceProvider.GetRequiredService<IGameService>();
                     var wordKernel = scope.ServiceProvider.GetRequiredKeyedService<Kernel>("word");
 
                     var gameLogger = loggerFactory.CreateLogger<WordAssociationGame>();
-                    var game = new WordAssociationGame(gameLogger, wordKernel, chatService, audioService);
+                    var game = new WordAssociationGame(gameLogger, wordKernel, chatService, audioService, gameService);
 
                     _logger.LogInformation("Starting Game...");
                     await game.StartChat(stoppingToken);

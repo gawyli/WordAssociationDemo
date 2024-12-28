@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DemoChat.Audio.Interfaces;
 using DemoChat.Chat.Interfaces;
 using DemoChat.Chat.Models;
+using DemoChat.Games.Interfaces;
 using DemoChat.Games.Models;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -17,11 +18,15 @@ public class WordAssociationGame : Playground
 {
     private readonly ILogger<WordAssociationGame> _logger;
     private readonly IChatService _chatService;
+    private readonly IGameService _gameService;
 
-    public WordAssociationGame(ILogger<WordAssociationGame> logger, Kernel kernel, IChatService chatService, IAudioService audioService) : base(logger, kernel, chatService, audioService)
+    private GameSession _gameSession;
+
+    public WordAssociationGame(ILogger<WordAssociationGame> logger, Kernel kernel, IChatService chatService, IAudioService audioService, IGameService gameService) : base(logger, kernel, chatService, audioService)
     {
         _logger = logger;
         _chatService = chatService;
+        _gameService = gameService;
     }
     
     // In game the AI starts first with stimulus word
@@ -43,26 +48,39 @@ public class WordAssociationGame : Playground
         if (base._isStopRequest)
         {
             await base.PersistChatSession(stoppingToken);
+            await _gameService.EndGameSession(_gameSession, stoppingToken);
         }
     }
 
     protected override async Task InitializeChatSession(CancellationToken cancellationToken)
     {
-        var systemPrompt = "You are playing a Word Association Game. Always responds with ONLY one stimulus word. Player can ONLY have one response word. Example\napple\nFruit\n\n For every stimulus and response word you MUST call functions to persists words in database.";
+        var systemPrompt = 
+"""
+You are playing a Word Association Game. 
+Always responds with ONLY one stimulus word. 
+Player can ONLY have one response word.
+
+Association is a stimulus word and response word.
+ 
+Association example
+apple
+fruit
+
+For each association (stimulus word and response word) you MUST call function to add association to the database.
+""";
 
         _chatSession = await _chatService.CreateChatSession(cancellationToken);
         _chatHistory = new ChatHistory(systemPrompt);
+
     }
 
     private async Task InitializeGameSession(CancellationToken cancellationToken)
     {
-        var wordAssociationGameSession = new WordAssociation(_chatSession.Id, DateTime.UtcNow);
+        _gameSession = await _gameService.CreateGameSession(_chatSession.Id, cancellationToken);
 
-        var session = await _chatService.PersistSession(wordAssociationGameSession, cancellationToken);
+        _chatSession.AddGameSession(_gameSession);
+        await _chatService.SaveChatSession(_chatSession, cancellationToken);
 
-        _chatSession.WordAssociationId = session.Id;
-
-        _chatHistory.AddMessage(AuthorRole.System, $"GameSessionId: {session.Id}");
+        _chatHistory.AddMessage(AuthorRole.System, $"GameSessionId: {_gameSession.Id}");
     }
-
 }

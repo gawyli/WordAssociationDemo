@@ -60,7 +60,7 @@ public class AudioService : IAudioService
         return textContent.Text!;
     }
 
-    public async Task<AudioFile> RecordAudioTest(string chatSessionId, CancellationToken cancellationToken)
+    public async Task<AudioFile> RecordAudio(string chatSessionId, CancellationToken cancellationToken)
     {
         var mimeType = "wav";
         (string outputPath, string fileName) = AudioFileUtils.GenerateFileDetails(AuthorRole.User, chatSessionId, mimeType);

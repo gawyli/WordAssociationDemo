@@ -32,11 +32,6 @@ public class ChatService : IChatService
         return chatSession;
     }
 
-    public async Task<WordAssociation> PersistSession(WordAssociation wordAssociationSession, CancellationToken cancellationToken)
-    {
-        return await _repository.AddAsync(wordAssociationSession, cancellationToken);
-    }
-
     public async Task<string> SendMessageAsync(ChatHistory chatHistory, Kernel kernel, CancellationToken cancellationToken)
     {
         OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()

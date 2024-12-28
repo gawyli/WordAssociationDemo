@@ -8,11 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using DemoChat.Games.Interfaces;
 using Microsoft.SemanticKernel;
 
 namespace DemoChat.Games;
-public class Playground : IPlayground
+public class Playground
 {
     private readonly ILogger<Playground> _logger;
     private readonly Kernel _kernel;
@@ -64,7 +63,7 @@ public class Playground : IPlayground
 
     protected async Task GetUserMessage(CancellationToken cancellationToken)
     {
-        var record = await _audioService.RecordAudioTest(_chatSession.Id, cancellationToken);
+        var record = await _audioService.RecordAudio(_chatSession.Id, cancellationToken);
         var userMessage = await _audioService.TranscribeAudio(record, cancellationToken);
 
         _chatHistory.AddUserMessage(userMessage);

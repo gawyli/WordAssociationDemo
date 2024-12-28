@@ -7,6 +7,8 @@ using DemoChat.Audio;
 using DemoChat.Audio.Interfaces;
 using DemoChat.Chat;
 using DemoChat.Chat.Interfaces;
+using DemoChat.Games;
+using DemoChat.Games.Interfaces;
 using DemoChat.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,8 @@ public static class AppSevicesRegistration
 {
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<IGameService, GameService>();
+
         services.RegisterAudioService(configuration);
         services.RegisterChatService(configuration);
 

@@ -14,5 +14,4 @@ public interface IChatService
     Task<ChatSession> CreateChatSession(CancellationToken cancellationToken);
     Task<string> SendMessageAsync(ChatHistory history, Kernel kernel, CancellationToken cancellationToken);
     Task SaveChatSession(ChatSession chatSession, CancellationToken cancellationToken);
-    Task<WordAssociation> PersistSession(WordAssociation wordAssociationSession, CancellationToken cancellationToken);
 }

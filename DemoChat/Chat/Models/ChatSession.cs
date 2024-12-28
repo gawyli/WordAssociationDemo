@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DemoChat.Audio.Models;
 using DemoChat.Common;
 using DemoChat.Games;
+using DemoChat.Games.Models;
 
 namespace DemoChat.Chat.Models;
 public class ChatSession : BaseEntity
@@ -13,6 +14,9 @@ public class ChatSession : BaseEntity
     public string? ChatHistory { get; set; }
     public DateTime Created { get; set; }
     public List<AudioFile> AudioFiles { get; set; } = new();
+    public List<GameSession> GameSessions { get; set; } = new();
+
+    // Temp
     public string? WordAssociationId { get; set; }
 
     public ChatSession(DateTime created)
@@ -33,5 +37,11 @@ public class ChatSession : BaseEntity
     public void SetWordAssociationId(string wordAssociationId)
     {
         this.WordAssociationId = wordAssociationId;
+    }
+
+    public void AddGameSession(GameSession gameSession)
+    {
+        
+        this.GameSessions.Add(gameSession);
     }
 }
