@@ -11,6 +11,7 @@ using DemoChat.Games.Models;
 namespace DemoChat.Chat.Interfaces;
 public interface IChatService
 {
+    Task<List<KeyValuePair<string, string>>> GetChatSession(CancellationToken cancellationToken);
     Task<ChatSession> CreateChatSession(CancellationToken cancellationToken);
     Task<string> SendMessageAsync(ChatHistory history, Kernel kernel, CancellationToken cancellationToken);
     Task SaveChatSession(ChatSession chatSession, CancellationToken cancellationToken);

@@ -63,7 +63,7 @@ public class AudioService : IAudioService
     public async Task<AudioFile> RecordAudio(string chatSessionId, CancellationToken cancellationToken)
     {
         var mimeType = "wav";
-        (string outputPath, string fileName) = AudioFileUtils.GenerateFileDetails(AuthorRole.User, chatSessionId, mimeType);
+        (string outputPath, string fileName) = GenerateAudioFileDetails(AuthorRole.User, chatSessionId, mimeType);
 
         var waveFormat = new WaveFormat(44100, 16, 2);
         using (var waveIn = new WaveInEvent())
@@ -120,7 +120,7 @@ public class AudioService : IAudioService
 
     //public async Task<AudioFile> RecordAudio(string chatSessionId, CancellationToken cancellationToken)
     //{
-    //    (string fileName, string outputPath) = GenerateFileDetails(false, "wav");
+    //    (string fileName, string outputPath) = GenerateAudioFileDetails(false, "wav");
 
     //    var waveFormat = new WaveFormat(44100, 16, 2);
     //    using (var waveIn = new WaveInEvent())
@@ -174,7 +174,7 @@ public class AudioService : IAudioService
             string audioMimeType = "mp3";
             try
             {
-                (string outputPath, string fileName) = AudioFileUtils.GenerateFileDetails(AuthorRole.Assistant, chatSessionId, audioMimeType);
+                (string outputPath, string fileName) = GenerateAudioFileDetails(AuthorRole.Assistant, chatSessionId, audioMimeType);
 
                 var audioFileBytes = audioContent.Data.HasValue ? audioContent.Data.Value.ToArray() : [];
 
@@ -210,6 +210,44 @@ public class AudioService : IAudioService
                 Thread.Sleep(1000);
             }
         }
+    }
+
+    private (string, string) GenerateAudioFileDetails(AuthorRole authorRole, string chatSessionId, string mimeType)
+    {
+        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        string sessionFolderName = "Sessions";
+        string sessionName = $"session-{chatSessionId}";
+
+        string subfolderName = string.Empty;
+        string fileName = string.Empty;
+        string audioPath = string.Empty;
+        string outputPath = string.Empty;
+
+        if (authorRole == AuthorRole.Assistant)
+        {
+            subfolderName = "AssistantAudio";
+            audioPath = Path.Combine(baseDirectory, sessionFolderName, sessionName, subfolderName);
+
+            fileName = $"audio-assistant-{Guid.NewGuid()}.{mimeType}";
+            outputPath = Path.Combine(audioPath, fileName);
+        }
+
+        if (authorRole == AuthorRole.User)
+        {
+            subfolderName = "UserAudio";
+            audioPath = Path.Combine(baseDirectory, sessionFolderName, sessionName, subfolderName);
+
+            fileName = $"audio-user-{Guid.NewGuid()}.{mimeType}";
+            outputPath = Path.Combine(audioPath, fileName);
+        }
+
+        if (!Directory.Exists(audioPath))
+        {
+            //_logger.LogInformation($"Creating directory {fullPath}");
+            Directory.CreateDirectory(audioPath);
+        }
+
+        return (outputPath, fileName);
     }
 }
 

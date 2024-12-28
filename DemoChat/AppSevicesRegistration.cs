@@ -9,8 +9,12 @@ using DemoChat.Chat;
 using DemoChat.Chat.Interfaces;
 using DemoChat.Games;
 using DemoChat.Games.Interfaces;
+using DemoChat.Hume.Interfaces;
+using DemoChat.Hume;
 using DemoChat.Repository;
+using DemoChat.Hume.Models;
 using Microsoft.EntityFrameworkCore;
+using Refit;
 
 namespace DemoChat;
 public static class AppSevicesRegistration
@@ -18,6 +22,8 @@ public static class AppSevicesRegistration
     public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IGameService, GameService>();
+        
+        services.RegisterHumeAIService(configuration);
 
         services.RegisterAudioService(configuration);
         services.RegisterChatService(configuration);
@@ -30,6 +36,27 @@ public static class AppSevicesRegistration
         services.AddDbContext<AppDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DemoRepository")));
 
         services.AddScoped<IRepository, EfRepository>();
+
+        return services;
+    }
+
+    private static IServiceCollection RegisterHumeAIService(this IServiceCollection services, IConfiguration configuration)
+    {
+        var humeAICfg = configuration.GetRequiredSection("HumeAI").Get<HumeAIConfig>();
+
+        services.AddTransient<HumeRequestHandler>();
+
+        services.AddHttpClient("HumeApi", client =>
+        {
+            client.BaseAddress = new Uri(humeAICfg!.BaseAddress);
+            client.DefaultRequestHeaders.Add("X-Hume-Api-Key", humeAICfg.ApiKey);
+
+        });
+
+        services.AddRefitClient<IHumeApi>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri(humeAICfg!.BaseAddress));
+
+        services.AddScoped<IHumeService, HumeAIService>();
 
         return services;
     }

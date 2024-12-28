@@ -10,6 +10,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.SemanticKernel;
 
+// Strategy pattern? instead Game?
+// Game > GameService?
 namespace DemoChat.Games;
 public class Playground
 {

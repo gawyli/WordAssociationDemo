@@ -10,9 +10,11 @@ namespace DemoChat.Games.Models;
 public class GameSession : BaseEntity
 {
     public string ChatSessionId { get; set; } = null!;
+    public string? EmotionsSessionId { get; set; }
     public DateTime Created { get; set; }
     public DateTime? Ended { get; set; }
     public List<Association> Associations { get; set; } = new();
+    //public string UserAudioFilePath { get; set; }
 
     public GameSession(string chatSessionId, DateTime created)
     {

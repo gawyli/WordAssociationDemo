@@ -24,6 +24,14 @@ public class ChatService : IChatService
         _repository = repository;
     }
 
+    public async Task<List<KeyValuePair<string, string>>> GetChatSession(CancellationToken cancellationToken)
+    {
+        // Specifications would be nice
+        var chatSessions = await _repository.ListAsync<ChatSession>(cancellationToken);
+        var ids = chatSessions.Select(gs => new KeyValuePair<string, string>(gs.Id, gs.Created.ToString("yyyy-MM-ddTHH:mm:ss"))).ToList();
+        return ids;
+    }
+
     public async Task<ChatSession> CreateChatSession(CancellationToken cancellationToken)
     {
         var chatSession = await _repository.AddAsync(new ChatSession(DateTime.UtcNow), cancellationToken);

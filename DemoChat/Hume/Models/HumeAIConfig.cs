@@ -1,4 +1,4 @@
-﻿namespace MePoC.Hume.Models;
+﻿namespace DemoChat.Hume.Models;
 public class HumeAIConfig
 {
     public string ApiKey { get; set; } = null!;

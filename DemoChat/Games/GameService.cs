@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DemoChat.Chat.Models;
 using DemoChat.Games.Interfaces;
 using DemoChat.Games.Models;
 using DemoChat.Repository;
@@ -17,6 +18,14 @@ public class GameService : IGameService
     {
         _logger = logger;
         _repository = repository;
+    }
+
+    public async Task<List<KeyValuePair<string, string>>> GetGameSession(CancellationToken cancellationToken)
+    {
+        // Specifications would be nice
+        var gameSessions = await _repository.ListAsync<GameSession>(cancellationToken);
+        var ids = gameSessions.Select(gs => new KeyValuePair<string, string>(gs.Id, gs.Created.ToString("yyyy-MM-ddTHH:mm:ss"))).ToList();
+        return ids;
     }
 
     public async Task<GameSession> CreateGameSession(string chatSessionId, CancellationToken cancellationToken)

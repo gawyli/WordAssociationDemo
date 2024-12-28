@@ -4,8 +4,7 @@ using DemoChat.Hume.Models;
 namespace DemoChat.Hume.Interfaces;
 public interface IHumeService
 {
-    //Task<IList<AudioFile>> AudioToEmotions(string[] recordsIds, CancellationToken cancellationToken);
-    //Task<string> GetJobDetails(string jobId, CancellationToken cancellationToken);
-
+    Task<string> CreateJobInference(string zipFilePath, CancellationToken cancellationToken);
+    Task<string> GetJobInferenceStatus(string jobId, CancellationToken cancellationToken);
     Task<IList<InferenceSourcePredictResult>> GetJobPrediction(string jobId, CancellationToken cancellationToken);
 }
