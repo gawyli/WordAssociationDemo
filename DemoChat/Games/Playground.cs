@@ -58,7 +58,7 @@ public class Playground
         _chatSession = await _chatService.CreateChatSession(cancellationToken);
         _chatHistory = new ChatHistory(systemPrompt);
 
-        _chatHistory.AddMessage(AuthorRole.Tool, $"ChatSessionId: {_chatSession.Id}");
+        _chatHistory.AddMessage(AuthorRole.System, $"ChatSessionId: {_chatSession.Id}");
     }
 
     protected async Task GetUserMessage(CancellationToken cancellationToken)
