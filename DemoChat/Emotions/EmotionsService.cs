@@ -52,9 +52,10 @@ public class EmotionsService : IEmotionsService
         return emotionsSession.JobId;
     }
 
-    public async Task<string> GetEmotionsJobStatus(string jobId, CancellationToken cancellationToken)
+    public async Task<string> GetEmotionsJobStatus(string emotionsSessionId, CancellationToken cancellationToken)
     {
-        return await _humeService.GetJobInferenceStatus(jobId, cancellationToken);
+        var emotionsSession = await _repository.GetByIdAsync<EmotionsSession>(emotionsSessionId, cancellationToken);
+        return await _humeService.GetJobInferenceStatus(emotionsSession.JobId, cancellationToken);
     }
 
     private async Task<string[]> GetAudioFilesPath(string gameSessionId, CancellationToken cancellationToken)
@@ -66,7 +67,8 @@ public class EmotionsService : IEmotionsService
 
         // Temp solution
         var gameSession = await _repository.GetByIdAsync<GameSession>(gameSessionId, cancellationToken);
-        var audioFiles = await _repository.ListAsync<AudioFile>(cancellationToken); // This can load a lot of unneeded files
+        var audioFiles = await _repository.ListAsync<AudioFile>(cancellationToken); // This can load a lot of unneeded files.
+        // ^ a bug with audioFiles - the EF Core do not convert string to enum correctly 
         var userAudioFilesPath = audioFiles.Where(x => x.ChatSessionId == gameSession.ChatSessionId && x.Name.StartsWith("audio-user")).Select(x => x.Path).ToArray<string>();
 
         return userAudioFilesPath;

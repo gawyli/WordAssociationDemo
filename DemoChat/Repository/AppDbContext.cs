@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DemoChat.Audio.Models;
 using DemoChat.Chat.Models;
+using DemoChat.Emotions.Models;
 using DemoChat.Games.Models;
+using DemoChat.Hume.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SemanticKernel.ChatCompletion;
 
@@ -17,6 +19,8 @@ public class AppDbContext : DbContext
 
     public DbSet<GameSession> GameSessions { get; set; }
     public DbSet<Association> Associations { get; set; }
+
+    public DbSet<EmotionsSession> EmotionsSessions { get; set; }
 
     public AppDbContext(DbContextOptions options) : base(options)
     {
@@ -33,6 +37,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Association>().HasKey(x => x.Id);
         modelBuilder.Entity<Association>().Property(a => a.Id).ValueGeneratedOnAdd();
 
+        modelBuilder.Entity<EmotionsSession>().HasKey(x => x.Id);
         
         base.OnModelCreating(modelBuilder);
     }

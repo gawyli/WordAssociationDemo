@@ -1,4 +1,4 @@
-﻿using MePoC.Hume.Models;
+﻿using DemoChat.Hume.Models;
 
 namespace DemoChat.Hume;
 public class HumeRequestHandler : DelegatingHandler

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DemoChat.Chat.Interfaces;
 using DemoChat.Emotions.Interfaces;
 using DemoChat.Games.Interfaces;
+using DemoChat.Games.Models;
 using DemoChat.Repository;
 using Microsoft.SemanticKernel;
 
@@ -14,17 +15,17 @@ namespace DemoChat.Plugins;
 public class PlaygroundPlugin
 {
     private readonly IEmotionsService _emotionsService;
-    private readonly IChatService _chatService;
+    //private readonly IChatService _chatService;
     private readonly IGameService _gameService;
 
-    public PlaygroundPlugin(IEmotionsService emotionsService, IChatService chatService, IGameService gameService)
+    public PlaygroundPlugin(ILogger<PlaygroundPlugin> logger, IEmotionsService emotionsService, IGameService gameService)
     {
         _emotionsService = emotionsService;
-        _chatService = chatService;
+        //_chatService = chatService;
         _gameService = gameService;
     }
 
-    // TODO: think about it
+    // TODO: We can't use chat service as ChatService register after Plugin registration
     //[KernelFunction("get_chat_sessions")]
     //[Description("Get a list of key value pair of Chat Session Ids with its Created date time")]
     //[return: Description("List<KeyValuePair<string, string>>")]
@@ -40,6 +41,7 @@ public class PlaygroundPlugin
     public async Task<List<KeyValuePair<string, string>>> GetGameSessions()
     {
         var gameSessions = await _gameService.GetGameSession(cancellationToken: default);
+
         return gameSessions;
     }
 
@@ -49,6 +51,9 @@ public class PlaygroundPlugin
     public async Task<string> CreateEmotionsSession([Description("Enter GameSessionId:")]string gameSessionId)
     {
         var emotionsSessionId = await _emotionsService.CreateEmotionsSession(gameSessionId, cancellationToken: default);
+
+        await _gameService.SetEmotionsSessionId(gameSessionId, emotionsSessionId, cancellationToken: default);
+
         return emotionsSessionId;
     }
 
@@ -63,7 +68,7 @@ public class PlaygroundPlugin
     }
 
     [KernelFunction("get_emotions_job_status")]
-    [Description("x")]
+    [Description("Get a emotions job inference status")]
     [return: Description("string")]
     public async Task<string> GetEmotionsJobStatus([Description("Enter EmotionsSessionId:")] string emotionsSessionId)
     {

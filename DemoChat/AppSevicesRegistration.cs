@@ -7,6 +7,8 @@ using DemoChat.Audio;
 using DemoChat.Audio.Interfaces;
 using DemoChat.Chat;
 using DemoChat.Chat.Interfaces;
+using DemoChat.Emotions;
+using DemoChat.Emotions.Interfaces;
 using DemoChat.Games;
 using DemoChat.Games.Interfaces;
 using DemoChat.Hume.Interfaces;
@@ -24,6 +26,8 @@ public static class AppSevicesRegistration
         services.AddScoped<IGameService, GameService>();
         
         services.RegisterHumeAIService(configuration);
+
+        services.AddScoped<IEmotionsService, EmotionsService>();
 
         services.RegisterAudioService(configuration);
         services.RegisterChatService(configuration);

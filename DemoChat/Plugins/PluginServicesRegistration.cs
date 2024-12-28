@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DemoChat.Emotions.Interfaces;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace DemoChat.Plugins;
@@ -19,11 +20,6 @@ public static class PluginServicesRegistration
         var logger = serviceProvider.GetRequiredService<ILoggerFactory>();
         var gameService = serviceProvider.GetRequiredService<IGameService>();
 
-        //var repository = serviceProvider.GetRequiredService<IRepository>();
-        //var humeAI = serviceProvider.GetRequiredService<IHumeService>();
-        //var chatHistory = serviceProvider.GetRequiredService<ChatHistory>();
-
-        //plugins.AddFromObject(new HumeAIPlugin(logger.CreateLogger<HumeAIPlugin>(), humeAI, repository));
         plugins.AddFromObject(new WordAssociationPlugin(logger.CreateLogger<WordAssociationPlugin>(), gameService));
 
         return plugins;
@@ -33,15 +29,11 @@ public static class PluginServicesRegistration
     {
         var serviceProvider = services.BuildServiceProvider();
 
-        //var logger = serviceProvider.GetRequiredService<ILoggerFactory>();
-        //var gameService = serviceProvider.GetRequiredService<IGameService>();
+        var logger = serviceProvider.GetRequiredService<ILoggerFactory>();
+        var emotionsService = serviceProvider.GetRequiredService<IEmotionsService>();
+        var gameService = serviceProvider.GetRequiredService<IGameService>();
 
-        //var repository = serviceProvider.GetRequiredService<IRepository>();
-        //var humeAI = serviceProvider.GetRequiredService<IHumeService>();
-        //var chatHistory = serviceProvider.GetRequiredService<ChatHistory>();
-
-        //plugins.AddFromObject(new HumeAIPlugin(logger.CreateLogger<HumeAIPlugin>(), humeAI, repository));
-        //plugins.AddFromObject(new WordAssociationPlugin(logger.CreateLogger<WordAssociationPlugin>(), gameService));
+        plugins.AddFromObject(new PlaygroundPlugin(logger.CreateLogger<PlaygroundPlugin>(), emotionsService, gameService));
 
         return plugins;
     }

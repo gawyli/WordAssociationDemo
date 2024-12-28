@@ -32,7 +32,7 @@ public static class ChatKernelRegistration
                 openAICfg.EmbeddingModelId,
                 openAICfg.ApiKey);
 
-            //kernelBuilder.Plugins.AddPlaygroundPlugins(services, configuration);
+            kernelBuilder.Plugins.AddPlaygroundPlugin(services, configuration);
 
             var kernel = kernelBuilder.Build();
 

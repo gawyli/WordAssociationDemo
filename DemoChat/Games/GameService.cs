@@ -48,6 +48,16 @@ public class GameService : IGameService
         
     }
 
+    public async Task SetEmotionsSessionId(string gameSessionId, string emotionsSessionId, CancellationToken cancellationToken)
+    {
+        var gameSession = await _repository.GetByIdAsync<GameSession>(gameSessionId, cancellationToken);
+        if (gameSession != null)
+        {
+            gameSession.EmotionsSessionId = emotionsSessionId;
+            await _repository.UpdateAsync(gameSession, cancellationToken);
+        }
+    }
+
     public async Task EndGameSession(GameSession gameSession, CancellationToken cancellationToken)
     {
         gameSession.SetEndedNow();
