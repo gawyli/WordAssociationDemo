@@ -11,7 +11,7 @@ public class Association : BaseEntity
     // To think about it
     class Invariants
     {
-        public static int MaxLenght = 10;
+        public static int MaxLength = 10;
     }
 
     public string GameSessionId { get; set; } = null!;

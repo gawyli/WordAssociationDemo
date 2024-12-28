@@ -16,9 +16,6 @@ public class ChatSession : BaseEntity
     public List<AudioFile> AudioFiles { get; set; } = new();
     public List<GameSession> GameSessions { get; set; } = new();
 
-    // Temp
-    public string? WordAssociationId { get; set; }
-
     public ChatSession(DateTime created)
     {
         this.Created = created;
@@ -32,11 +29,6 @@ public class ChatSession : BaseEntity
     public void AddChatHistory(string chatHistory)
     {
         this.ChatHistory = chatHistory;
-    }
-
-    public void SetWordAssociationId(string wordAssociationId)
-    {
-        this.WordAssociationId = wordAssociationId;
     }
 
     public void AddGameSession(GameSession gameSession)
