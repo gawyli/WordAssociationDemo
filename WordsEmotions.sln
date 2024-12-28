@@ -6,9 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FDE75CCA-5FF4-4DBF-B6D4-814C11A828D6}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoChat", "DemoChat\DemoChat.csproj", "{4DD34BCD-D20C-42B2-A196-AFAB1C75930F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoChat", "DemoChat\DemoChat.csproj", "{4DD34BCD-D20C-42B2-A196-AFAB1C75930F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

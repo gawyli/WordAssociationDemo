@@ -34,4 +34,5 @@ This project uses .NET 8
 - Once migrations are set up and our appsettings are configured, run the app and have a play word associaton with AI
 
 ## Controles
-- When finish talk during the game, press space to continue, send message to Assistatnt and wait until Assistant responses
+- When finish talk during the game, press spacebar to continue, send message to Assistatnt and wait for Assistant response
+- To stop conversation simply say stop and press spacebar
