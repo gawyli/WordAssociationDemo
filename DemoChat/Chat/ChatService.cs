@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DemoChat.Audio.Interfaces;
 using DemoChat.Chat.Interfaces;
 using DemoChat.Chat.Models;
+using DemoChat.Games.Models;
 using DemoChat.Repository;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -15,13 +16,11 @@ namespace DemoChat.Chat;
 public class ChatService : IChatService
 {
     private readonly ILogger<ChatService> _logger;
-    private readonly Kernel _kernel;
     private readonly IRepository _repository;
 
-    public ChatService(ILogger<ChatService> logger, [FromKeyedServices("chat")] Kernel kernel, IRepository repository)
+    public ChatService(ILogger<ChatService> logger, IRepository repository)
     {
         _logger = logger;
-        _kernel = kernel;
         _repository = repository;
     }
 
@@ -33,15 +32,15 @@ public class ChatService : IChatService
         return chatSession;
     }
 
-    public async Task<string> SendMessageAsync(ChatHistory chatHistory, CancellationToken cancellationToken)
+    public async Task<string> SendMessageAsync(ChatHistory chatHistory, Kernel kernel, CancellationToken cancellationToken)
     {
         OpenAIPromptExecutionSettings openAIPromptExecutionSettings = new()
         {
             ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions
         };
 
-        var chat = _kernel.Services.GetRequiredService<IChatCompletionService>();
-        var responseContent = await chat.GetChatMessageContentAsync(chatHistory, openAIPromptExecutionSettings, _kernel, cancellationToken);
+        var chat = kernel.Services.GetRequiredService<IChatCompletionService>();
+        var responseContent = await chat.GetChatMessageContentAsync(chatHistory, openAIPromptExecutionSettings, kernel, cancellationToken);
 
         var response = responseContent.Content ?? string.Empty;
 
