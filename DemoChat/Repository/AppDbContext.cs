@@ -32,7 +32,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<AudioFile>().HasKey(x => x.Id);
         modelBuilder.Entity<AudioFile>().Property(x => x.AuthorRole)
-            .HasConversion(v => v.ToString(), v => (AuthorRole)Enum.Parse(typeof(AuthorRole), v));
+            .HasConversion(v => v.ToString(), v => new AuthorRole(v)); //this is not work - i think
 
         modelBuilder.Entity<Association>().HasKey(x => x.Id);
         modelBuilder.Entity<Association>().Property(a => a.Id).ValueGeneratedOnAdd();

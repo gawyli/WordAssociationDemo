@@ -30,13 +30,65 @@ public class HumeAIService : IHumeService
         {
             var zipFileName = Path.GetFileName(zipFilePath);
 
-            var streamPart = new StreamPart(stream, zipFileName, "application/zip");
+            var streamPart = new StreamPart(stream, zipFileName, "multipart/form-data");
             var response = await _humeApi.StartInferenceJob(streamPart, cancellationToken);
 
             var jobDto = JsonSerializer.Deserialize<JobDto>(response);
 
             return jobDto.JobId;
         }
+    }
+
+    public async Task<string> CreateJobInference(IEnumerable<string> filePaths, CancellationToken cancellationToken)
+    {
+        var byteArrysParts = new List<ByteArrayPart>();
+
+        foreach (var filePath in filePaths)
+        {
+            var fileContent = await System.IO.File.ReadAllBytesAsync(filePath);
+            var fileName = Path.GetFileName(filePath);
+
+            byteArrysParts.Add(new ByteArrayPart(fileContent, fileName, "audio/wav"));
+        }
+
+        var jobConfig = new InferenceJobConfiguration
+        {
+            Models = new ModelsConfiguration
+            {
+                Burst = new { },
+                Prosody = new ProsodyConfiguration
+                {
+                    Granularity = "word",
+                    IdentifySpeakers = false
+                },
+                Language = new LanguageConfiguration
+                {
+                    Granularity = "word",
+                    IdentifySpeakers = false,
+                    Sentiment = new { },
+                    Toxicity = new { }
+                },
+                Ner = new NerConfiguration
+                {
+                    IdentifySpeakers = false
+                }
+            },
+            Transcription = new TranscriptionConfiguration
+            {
+                IdentifySpeakers = true,
+                ConfidenceThreshold = 0.3,
+                Language = Language.en
+            }
+        };
+
+        var jsonPayload = JsonSerializer.Serialize(jobConfig);
+        // Send all files as part of the request
+        var response = await _humeApi.StartInferenceJob(jsonPayload, byteArrysParts, cancellationToken);    // request successfully, however, audiofiles cannot be transcribed
+
+        // Deserialize the response if necessary
+        var jobDto = JsonSerializer.Deserialize<JobDto>(response);
+
+        return jobDto.JobId;
     }
 
     public async Task<string> GetJobInferenceStatus(string jobId, CancellationToken cancellationToken)

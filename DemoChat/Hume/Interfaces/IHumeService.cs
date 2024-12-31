@@ -5,6 +5,8 @@ namespace DemoChat.Hume.Interfaces;
 public interface IHumeService
 {
     Task<string> CreateJobInference(string zipFilePath, CancellationToken cancellationToken);
+
+    Task<string> CreateJobInference(IEnumerable<string> filePaths, CancellationToken cancellationToken);
     Task<string> GetJobInferenceStatus(string jobId, CancellationToken cancellationToken);
     Task<IList<InferenceSourcePredictResult>> GetJobPrediction(string jobId, CancellationToken cancellationToken);
 }

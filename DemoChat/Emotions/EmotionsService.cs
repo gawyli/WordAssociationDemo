@@ -42,14 +42,21 @@ public class EmotionsService : IEmotionsService
         var audioFilesPaths = await GetAudioFilesPath(emotionsSession.GameSessionId, cancellationToken);
         var zipFilePath = CreateZipFile(emotionsSession.Id, audioFilesPaths);
 
-        var jobId = await _humeService.CreateJobInference(zipFilePath, cancellationToken);
+        try
+        {
+            var jobId = await _humeService.CreateJobInference(new string[] { zipFilePath }, cancellationToken);
+            emotionsSession.JobId = jobId;
+            emotionsSession.ZipFilePath = zipFilePath;
 
-        emotionsSession.JobId = jobId;
-        emotionsSession.ZipFilePath = zipFilePath;
+            await _repository.UpdateAsync(emotionsSession, cancellationToken);
 
-        await _repository.UpdateAsync(emotionsSession, cancellationToken);
-
-        return emotionsSession.JobId;
+            return emotionsSession.JobId;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception($"Exception Message: {e}", e);
+        }
     }
 
     public async Task<string> GetEmotionsJobStatus(string emotionsSessionId, CancellationToken cancellationToken)
@@ -58,6 +65,7 @@ public class EmotionsService : IEmotionsService
         return await _humeService.GetJobInferenceStatus(emotionsSession.JobId, cancellationToken);
     }
 
+    // tests
     private async Task<string[]> GetAudioFilesPath(string gameSessionId, CancellationToken cancellationToken)
     {
 
@@ -77,6 +85,8 @@ public class EmotionsService : IEmotionsService
     private string CreateZipFile(string emotionsSessionId, string[] audioFilePaths)
     {
         var zipFilePath = GenerateZipFileDetails(emotionsSessionId);
+        _logger.LogInformation($"Creating zip file at path: {zipFilePath}");
+
         using (var zipStream = new ZipOutputStream(System.IO.File.Create(zipFilePath)))
         {
             zipStream.SetLevel(0);  // store only
@@ -84,8 +94,7 @@ public class EmotionsService : IEmotionsService
             byte[] buffer = new byte[4096];
             foreach (var audioFilePath in audioFilePaths)
             {
-
-                var entry = new ZipEntry(Path.GetFileName(audioFilePath))
+                var entry = new ZipEntry($"audio/{Path.GetFileName(audioFilePath)}")
                 {
                     DateTime = DateTime.UtcNow
                 };
@@ -106,6 +115,7 @@ public class EmotionsService : IEmotionsService
             zipStream.Close();
         }
 
+        _logger.LogInformation($"Zip file created successfully at path: {zipFilePath}");
         return zipFilePath;
     }
 
@@ -122,9 +132,10 @@ public class EmotionsService : IEmotionsService
             Directory.CreateDirectory(zipFilePath);
         }
 
-        var fileName = $"zip-file-{emotionsSessionId}.zip";
+        var fileName = $"audio-files-{Guid.NewGuid()}.zip";
         var outputPath = Path.Combine(zipFilePath, fileName);
 
         return outputPath;
     }
+
 }

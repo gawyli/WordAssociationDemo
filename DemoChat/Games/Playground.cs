@@ -55,12 +55,13 @@ public class Playground
 
     protected virtual async Task InitializeChatSession(CancellationToken cancellationToken)
     {
-        var systemPrompt = "You are helpful and love small talks. Be a great companion for Human being ";
+        var systemPrompt = "You are helpful and love small talks. Be a great companion for Human being. DON'T respond any IDs to the user. ONLY use IDs for functions calling.";
 
         _chatSession = await _chatService.CreateChatSession(cancellationToken);
         _chatHistory = new ChatHistory(systemPrompt);
 
         _chatHistory.AddMessage(AuthorRole.System, $"ChatSessionId: {_chatSession.Id}");
+        _chatHistory.AddMessage(AuthorRole.System, $"EmotionsSessionId: 081f66dc-58be-4cc2-9a2c-78a950135794");
     }
 
     protected async Task GetUserMessage(CancellationToken cancellationToken)

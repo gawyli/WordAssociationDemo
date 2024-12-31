@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DemoChat.Games.Interfaces;
 public interface IGameService
 {
-    Task<List<KeyValuePair<string, string>>> GetGameSession(CancellationToken cancellationToken);
+    Task<List<string>> GetGameSessions(CancellationToken cancellationToken);
     Task<GameSession> CreateGameSession(string chatSessionId, CancellationToken cancellationToken);
     Task AddAssociation(string gameSessionId, string stimulus, string response, CancellationToken cancellationToken);
     Task SetEmotionsSessionId(string gameSessionId, string jobInferenceId, CancellationToken cancellationToken);

@@ -20,12 +20,21 @@ public class GameService : IGameService
         _repository = repository;
     }
 
-    public async Task<List<KeyValuePair<string, string>>> GetGameSession(CancellationToken cancellationToken)
+    public async Task<List<string>> GetGameSessions(CancellationToken cancellationToken)
     {
         // Specifications would be nice
         var gameSessions = await _repository.ListAsync<GameSession>(cancellationToken);
-        var ids = gameSessions.Select(gs => new KeyValuePair<string, string>(gs.Id, gs.Created.ToString("yyyy-MM-ddTHH:mm:ss"))).ToList();
-        return ids;
+        var gameSessionsDetails = new List<string>();
+
+        foreach (var gameSession in gameSessions)
+        {
+            var gameSessionDetails =
+                $"GameSessionId: {gameSession.Id}, Created: {gameSession.Created:yyyy-MM-ddTHH:mm:ss)}";
+
+            gameSessionsDetails.Add(gameSessionDetails);
+        }
+
+        return gameSessionsDetails;
     }
 
     public async Task<GameSession> CreateGameSession(string chatSessionId, CancellationToken cancellationToken)
